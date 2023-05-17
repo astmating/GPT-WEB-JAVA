@@ -5,6 +5,7 @@ import com.chat.java.model.User;
 import com.chat.java.model.res.UserInfoRes;
 import com.chat.java.model.res.AdminHomeRes;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 用户表(User)表数据库访问层
@@ -18,4 +19,5 @@ public interface UserDao extends BaseMapper<User> {
 
     AdminHomeRes adminHome();
 
+    User findUser(String mobile);
 }

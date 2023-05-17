@@ -28,6 +28,7 @@ import com.chat.java.model.res.*;
 import javax.annotation.Resource;
 
 import com.chat.java.utils.RedisUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -59,6 +60,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
     @Resource
     OrderDao orderDao;
 
+    @Resource
+    UserDao userDao;
 
     @Override
     public B<JSONObject> queryPage(UserPageReq req) {
@@ -269,5 +272,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
             userInfo.setType(0);
         }
         return B.okBuild(userInfo);
+    }
+
+    @Override
+    public User findUser(String mobile) {
+        return userDao.findUser(mobile);
     }
 }

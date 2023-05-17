@@ -4,7 +4,10 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.exceptions.ClientException;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.chat.java.constant.CommonConst;
+import com.chat.java.dao.UserDao;
 import com.chat.java.exception.CustomException;
 import com.chat.java.model.SysConfig;
 import com.chat.java.model.User;
@@ -44,24 +47,33 @@ import java.util.concurrent.TimeUnit;
 @Api(tags = {"用户/管理员登录、注册，首页，获取用户类型"})
 public class BaseController {
 
-
     final IUserService userService;
 
     final RedisUtil redisUtil;
 
     final EmailServiceUtil emailServiceUtil;
 
+    final IUserService iUserService;
+
 
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value = "用户登录")
-    @AvoidRepeatRequest(intervalTime = 60 * 3L ,msg = "请勿短时间连续登录")
+//    @AvoidRepeatRequest(intervalTime = 60 * 3L ,msg = "请勿短时间连续登录")
     public B<JSONObject> userLogin(@Validated @RequestBody UserLogin userLogin) {
-        List<User> list = userService.lambdaQuery()
-                .eq(User::getMobile, userLogin.getMobile())
-                .eq(User::getPassword, userLogin.getPassword())
-                .ne(User::getType,-1)
-                .list();
+//        List<User> list = userService.lambdaQuery()
+//                .eq(User::getMobile, userLogin.getMobile())
+//                .eq(User::getPassword, userLogin.getPassword())
+//                .ne(User::getType,-1)
+//                .list();
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("mobile", userLogin.getMobile())
+                .eq("password", userLogin.getPassword())
+                .ne("type", -1);
+        List<User> list = userService.getBaseMapper().selectList(wrapper);
+        System.out.println("SQL: " + wrapper.getSqlSegment());
+        System.out.println("Result: " + list);
+
         if (list == null || list.size() == 0) {
             return B.finalBuild("用户名或密码错误");
         }

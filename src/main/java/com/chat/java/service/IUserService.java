@@ -43,5 +43,5 @@ public interface IUserService extends IService<User> {
 
     B<UserInfoRes> getType(Long userId);
 
-
+    User findUser(String mobile);
 }
